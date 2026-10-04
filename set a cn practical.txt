@@ -1,0 +1,2138 @@
+LAB Scenario:
+You are tasked with seting up a lan with two VLANs(VLAN 10 and VLAN 20).
+task 1: configure the pcs in vlan 10 and vlan 20 and verify the connectivity within each vlan.
+task 2:configure vlan trunking between two switches and verify that vlan 10 and vlan20 do not communicate with each other.
+task 3:implement inter-vlan routing using a router and verify communication between the two vlans. 
+
+NUMERICAL SUBNETING :
+The organization has been assigned the network 192.168.5.0/24 and needs to divide it into 16 equal subnets.
+Q1:What is the new subnet mask?
+Q2:Calculate the network address and broadcast address for the 3rd subnet.
+Q3:provide the range of usable IP addresses for the 3rd subnet.
+
+Today 7:44 AM
+Pasted markdown(3).md
+File
+what is the diff btn what you gave and ths
+
+Ahhh yes — the file you uploaded is substantially different from the ACL practical I gave you. I treated your question as a simple “block 192.168.1.0/24” ACL exercise, while your actual practical is a full multi-router firewall lab.
+
+Main difference
+	What I gave you	Your uploaded Lab 17
+Purpose	Simple Standard ACL exercise	Implement a firewall using Standard ACL
+Topology	1 router, 2 LANs	2 routers, 3 sections
+Networks	192.168.1.0/24, 192.168.2.0/24	Students 10.0.0.0/8, Teachers 192.168.1.0/24, Server 172.16.0.0/24
+Routing	No routing protocol needed	RIPv2 required
+ACL type	Numbered ACL 10	Named Standard ACL BlockStudents
+ACL rule	deny 192.168.1.0 0.0.0.255	deny 10.0.0.0 0.255.255.255
+ACL placement	Inbound on Students interface	Outbound on Router0 G0/0
+What gets blocked	192.168.1.0/24 traffic	Students → Server only
+Teachers access	Not really part of topology	Students can still reach Teachers
+Verification	Basic ping + ACL show commands	Before/after pings, ACL inspection, modification, deletion
+Extra	Basic wildcard-mask explanation	ACL placement analysis + modify ACL to block one host + delete ACL
+
+Your actual file specifically says the objective is to block the Students section from accessing the Server section while allowing Students to access Teachers.
+
+And the important part is that the ACL goes on Router0 GigabitEthernet 0/0 outbound, because that interface leads toward the Server section.
+
+The actual ACL is:
+
+ip access-list standard BlockStudents
+ deny 10.0.0.0 0.255.255.255
+ permit any
+exit
+
+interface gigabitethernet 0/0
+ ip access-group BlockStudents out
+
+So for your practical, use the uploaded file's version, not my previous simplified version.
+
+Also, your uploaded practical has two questions/tasks mixed together conceptually:
+
+Subnetting: 192.168.5.0/24 → 16 subnets
+→ /28, 255.255.255.240, 8th subnet = 192.168.5.112/28.
+Firewall/ACL: The uploaded Lab 17 is a different, more complete ACL scenario involving Students, Teachers, Server, RIPv2, and two routers.
+
+If your teacher gave you the exact Lab 17 file, I would follow its topology and commands exactly, rather than the simplified topology I gave earlier.
+
+yall ookay now gimme everything imp for viva and all for cn
+📚
+
+YEAH 😭 For CN (Computer Networks) viva, especially with the practicals you've been doing, you want three things:
+
+Core theory viva
+Packet Tracer/CLI viva
+“Why did you use this?” questions — teachers LOVE these.
+
+I'll make this as a viva-cram sheet, with short answers you can actually say aloud.
+
+🧠 COMPUTER NETWORKS VIVA — COMPLETE CRAM SHEET
+1. Absolute Basics
+Q1. What is a computer network?
+
+A computer network is a collection of interconnected devices that communicate and share resources using communication protocols.
+
+Q2. What are the main components of a network?
+Sender
+Receiver
+Transmission medium
+Network devices
+Protocols
+Data/messages
+Q3. What is a protocol?
+
+A protocol is a set of rules that defines how devices communicate and exchange data.
+
+Examples:
+
+TCP
+IP
+HTTP
+FTP
+DNS
+DHCP
+Q4. What is a node?
+
+Any device connected to a network that can send, receive, or forward data.
+
+Q5. What is bandwidth?
+
+The maximum data-carrying capacity of a communication link, usually measured in bits per second.
+
+Q6. What is throughput?
+
+The actual rate at which data is successfully transmitted.
+
+Difference:
+
+Bandwidth = theoretical maximum
+Throughput = actual achieved rate
+
+Q7. What is latency?
+
+The time taken for data to travel from source to destination.
+
+2. LAN, MAN, WAN
+Q. What is LAN?
+
+Local Area Network — covers a small geographical area such as a room, building, or campus.
+
+Q. What is MAN?
+
+Metropolitan Area Network — covers a city or metropolitan area.
+
+Q. What is WAN?
+
+Wide Area Network — covers large geographical areas such as countries or continents.
+
+Q. Example of WAN?
+
+The Internet.
+
+3. Network Topologies
+
+Know these:
+
+Bus
+Star
+Ring
+Mesh
+Tree
+Hybrid
+Q. Most commonly used LAN topology?
+
+Star topology.
+
+Q. Why?
+
+Because each device has a dedicated connection to a central switch, making management and troubleshooting easier.
+
+Q. Disadvantage of star topology?
+
+Failure of the central device can affect the connected network.
+
+Q. Advantage of mesh?
+
+High redundancy and reliability because multiple paths exist.
+
+Q. Disadvantage?
+
+Expensive because it requires many links.
+
+4. OSI MODEL 🔥🔥🔥
+
+You must know this.
+
+Layer	Name	Main Function
+7	Application	Network services to applications
+6	Presentation	Translation, encryption, compression
+5	Session	Establish/manage/terminate sessions
+4	Transport	End-to-end delivery
+3	Network	Logical addressing and routing
+2	Data Link	Frames and MAC addressing
+1	Physical	Bits/signals/transmission
+Mnemonic
+
+A P S T N D P
+
+All People Seem To Need Data Processing
+
+or:
+
+Please Do Not Throw Sausage Pizza Away
+
+Q. Which layer does IP work at?
+
+Network Layer — Layer 3.
+
+Q. Which layer does TCP work at?
+
+Transport Layer — Layer 4.
+
+Q. Which layer does Ethernet work at?
+
+Primarily Data Link Layer — Layer 2, with physical transmission at Layer 1.
+
+Q. Which layer uses MAC addresses?
+
+Data Link Layer.
+
+Q. Which layer uses IP addresses?
+
+Network Layer.
+
+Q. Which layer uses port numbers?
+
+Transport Layer.
+
+5. TCP/IP MODEL
+
+Know this too.
+
+TCP/IP	Rough OSI equivalent
+Application	5, 6, 7
+Transport	4
+Internet	3
+Network Access	1, 2
+Q. OSI vs TCP/IP?
+
+OSI is a 7-layer reference model.
+
+TCP/IP is the practical protocol suite/model used for Internet communication.
+
+6. TCP vs UDP 🔥
+TCP	UDP
+Connection-oriented	Connectionless
+Reliable	Unreliable/best-effort
+Ordered delivery	No guaranteed order
+Error/retransmission mechanisms	No retransmission mechanism
+More overhead	Less overhead
+Slower generally	Faster generally
+TCP examples
+HTTP/HTTPS
+FTP
+SSH
+UDP examples
+DNS
+DHCP
+VoIP
+streaming applications
+Q. Why use UDP?
+
+When low overhead and speed are more important than guaranteed delivery.
+
+7. IP ADDRESSING 🔥🔥
+IPv4
+
+IPv4 uses 32-bit addresses.
+
+Example:
+
+192.168.1.10
+
+Four octets.
+
+Each octet = 8 bits.
+
+Therefore:
+
+8 × 4 = 32 bits
+IPv6
+
+IPv6 uses 128-bit addresses.
+
+Example:
+
+2001:db8::1
+Q. Why was IPv6 introduced?
+
+Primarily because IPv4 has a limited address space.
+
+8. Private IPv4 Addresses
+
+MEMORIZE:
+
+Class A private
+10.0.0.0/8
+Class B private
+172.16.0.0/12
+Class C private
+192.168.0.0/16
+
+Your ACL practical uses:
+
+10.0.0.0/8
+192.168.1.0/24
+172.16.0.0/24
+
+The uploaded Lab 17 specifically uses 10.0.0.0/8 for Students, 192.168.1.0/24 for Teachers, and 172.16.0.0/24 for the Server section.
+
+9. SUBNETTING 🔥🔥🔥
+
+Your practical question:
+
+192.168.5.0/24
+
+Need:
+
+16 subnets
+Q. How many bits do we borrow?
+
+We need:
+
+2^n ≥ 16
+
+Therefore:
+
+2^4 = 16
+
+Borrow 4 bits.
+
+Original:
+
+/24
+
+New:
+
+/28
+
+Subnet mask:
+
+255.255.255.240
+Q. How many addresses per /28?
+
+Host bits:
+
+32 - 28 = 4
+
+Addresses:
+
+2^4 = 16
+
+Usable:
+
+16 - 2 = 14
+
+because one is network and one is broadcast.
+
+Your 8th subnet
+
+Subnet increment:
+
+256 - 240 = 16
+
+Subnets:
+
+1st  → .0
+2nd  → .16
+3rd  → .32
+4th  → .48
+5th  → .64
+6th  → .80
+7th  → .96
+8th  → .112
+
+Therefore:
+
+Network:
+
+192.168.5.112
+
+Broadcast:
+
+192.168.5.127
+
+Usable:
+
+192.168.5.113 – 192.168.5.126
+10. NETWORK ADDRESS VS BROADCAST
+Network address
+
+Identifies the subnet itself.
+
+Cannot normally be assigned to a host.
+
+Broadcast address
+
+Used to send a packet to all hosts in the subnet.
+
+Cannot normally be assigned to a host.
+
+11. DEFAULT GATEWAY
+Q. What is a default gateway?
+
+The router interface that a host uses to communicate with devices outside its local network.
+
+Example:
+
+PC:
+192.168.1.10
+
+Gateway:
+192.168.1.1
+
+If PC wants to reach another subnet, it sends the packet toward the gateway.
+
+12. MAC ADDRESS vs IP ADDRESS 🔥
+MAC	IP
+Layer 2	Layer 3
+Hardware/data-link address	Logical/network address
+Used within local network communication	Used for routing between networks
+Usually 48-bit Ethernet address	IPv4 = 32-bit
+
+Example MAC:
+
+00:1A:2B:3C:4D:5E
+13. SWITCH 🔥
+Q. What does a switch do?
+
+A switch forwards Ethernet frames based on MAC addresses.
+
+Q. Which layer?
+
+Layer 2.
+
+Q. How does a switch learn MAC addresses?
+
+It examines the source MAC address of incoming frames and stores it in its MAC address table.
+
+Important commands:
+show mac address-table
+14. HUB VS SWITCH
+Hub
+Layer 1
+Broadcasts incoming data to all ports
+No MAC address table
+Switch
+Layer 2
+Uses MAC address table
+Sends frames toward appropriate port
+15. ROUTER 🔥🔥
+Q. What does a router do?
+
+A router connects different networks and forwards packets using IP addresses and routing information.
+
+Q. Which layer?
+
+Layer 3.
+
+Q. Why do we need routers?
+
+To communicate between different IP networks/subnets.
+
+16. ROUTING
+Q. What is routing?
+
+The process of selecting a path for packets to travel from source to destination.
+
+Types:
+Static routing
+Dynamic routing
+17. STATIC ROUTING
+Q. What is static routing?
+
+A route manually configured by the network administrator.
+
+Example:
+
+ip route 192.168.2.0 255.255.255.0 10.0.0.2
+Advantages
+Simple for small networks
+Predictable
+No routing protocol overhead
+Disadvantages
+Manual configuration
+Doesn't automatically adapt to failures
+Difficult to maintain in large networks
+18. DYNAMIC ROUTING
+
+Routers exchange routing information automatically using routing protocols.
+
+Examples:
+
+RIP
+OSPF
+BGP
+19. RIP 🔥
+
+Your uploaded practical uses RIPv2.
+
+Q. What is RIP?
+
+Routing Information Protocol.
+
+Q. What type?
+
+Distance-vector routing protocol.
+
+Q. Metric?
+
+Hop count.
+
+Maximum hop count?
+
+15 hops.
+
+16 = unreachable.
+
+RIPv1 vs RIPv2?
+RIPv1	RIPv2
+Classful	Classless
+Doesn't support VLSM	Supports VLSM
+Broadcast	Multicast
+No subnet mask information	Carries subnet mask
+RIPv2 command:
+router rip
+version 2
+network 10.0.0.0
+network 192.168.1.0
+no auto-summary
+20. OSPF 🔥
+Q. What is OSPF?
+
+Open Shortest Path First.
+
+Type?
+
+Link-state routing protocol.
+
+Metric?
+
+Cost.
+
+Algorithm?
+
+Dijkstra's Shortest Path First algorithm.
+
+Advantage?
+
+Faster convergence and better scalability than RIP.
+
+OSPF command:
+router ospf 1
+network 192.168.1.0 0.0.0.255 area 0
+21. RIP VS OSPF
+RIP	OSPF
+Distance vector	Link state
+Hop count	Cost
+Max 15 hops	Much more scalable
+Slower convergence	Faster convergence
+Simple	More complex
+Small networks	Medium/large networks
+22. BGP 🔥🔥
+
+You have done BGP practicals, so know this.
+
+Q. What is BGP?
+
+Border Gateway Protocol.
+
+It is a path-vector routing protocol used to exchange routing information between Autonomous Systems.
+
+Q. What is an AS?
+
+Autonomous System — a collection of networks under a common routing administration.
+
+BGP types
+
+eBGP: between different ASes.
+
+iBGP: within the same AS.
+
+Your earlier practical had:
+
+AS 20
+AS 35
+AS 50
+
+So the BGP relationships between those different AS numbers are eBGP.
+
+23. BGP vs OSPF
+BGP	OSPF
+Path vector	Link state
+Inter-AS routing	Primarily intra-AS
+Internet-scale	Internal networks
+Uses AS/path attributes	Uses cost
+24. ACL 🔥🔥🔥
+
+This is VERY important because your current practical is ACL/firewall.
+
+Q. What is an ACL?
+
+Access Control List is a set of rules used to permit or deny network traffic.
+
+Q. What can ACL do?
+
+It can control which traffic is allowed or denied based on characteristics such as source/destination addresses and, depending on ACL type, protocols/ports.
+
+25. Standard ACL vs Extended ACL
+Standard ACL
+
+Primarily filters based on source IP address.
+
+Extended ACL
+
+Can filter based on:
+
+Source IP
+Destination IP
+Protocol
+Port number
+Standard ACL example:
+access-list 10 deny 192.168.1.0 0.0.0.255
+access-list 10 permit any
+26. NUMBERED VS NAMED ACL
+
+Your Lab 17 uses a named Standard ACL:
+
+ip access-list standard BlockStudents
+
+Numbered ACL
+access-list 10 deny ...
+Named ACL
+ip access-list standard BlockStudents
+
+Named ACLs are easier to identify and manage.
+
+27. WILDCARD MASK 🔥🔥🔥
+
+This one is a classic viva question.
+
+Q. What is a wildcard mask?
+
+A wildcard mask tells the ACL which bits should be matched exactly and which can vary.
+
+Important:
+0 = must match
+1 = ignore / can vary
+
+Example:
+
+192.168.1.0
+0.0.0.255
+
+means:
+
+192.168.1.X
+Subnet mask ↔ wildcard
+Subnet mask: 255.255.255.0
+Wildcard:    0.0.0.255
+
+Because:
+
+255.255.255.255
+-255.255.255.0
+----------------
+  0.0.0.255
+28. YOUR LAB 17 ACL 🔥🔥🔥
+
+Students:
+
+10.0.0.0/8
+
+Teachers:
+
+192.168.1.0/24
+
+Server:
+
+172.16.0.0/24
+
+The goal is:
+
+Students ──X──> Server
+Students ──────> Teachers
+Teachers ──────> Server
+
+The ACL is:
+
+ip access-list standard BlockStudents
+ deny 10.0.0.0 0.255.255.255
+ permit any
+
+Then:
+
+interface gigabitethernet 0/0
+ip access-group BlockStudents out
+
+The file explicitly identifies this as the selected placement.
+
+29. WHY OUTBOUND?
+
+🔥 VERY likely viva question.
+
+Teacher:
+
+Why did you apply ACL outbound on Router0 G0/0?
+
+Answer:
+
+Because Router0 G0/0 is the interface leading toward the Server network. Applying the ACL outbound there allows us to block Students from reaching the Server while allowing their traffic toward other destinations, such as Teachers.
+
+The lab specifically evaluates seven possible placements and selects Router0 G0/0 outbound because it blocks Students from the Server only.
+
+30. WHY NOT INBOUND ON STUDENTS?
+
+If we put:
+
+ip access-group BlockStudents in
+
+on the Students interface, the router would drop Students' packets before they can reach any destination.
+
+So Students would lose access to:
+
+Server ❌
+Teachers ❌
+
+But our requirement is only:
+
+Students → Server ❌
+Students → Teachers ✅
+
+That's why the ACL is placed closer to the Server destination.
+
+31. permit any — WHY?
+
+This is another good viva question.
+
+ACLs have an implicit deny at the end.
+
+Conceptually:
+
+deny everything
+
+is automatically present after your rules.
+
+Therefore:
+
+deny 10.0.0.0 0.255.255.255
+
+would also prevent all unmatched traffic.
+
+So we add:
+
+permit any
+
+to explicitly allow all other traffic.
+
+Your lab explains this directly.
+
+32. INBOUND VS OUTBOUND
+Inbound ACL
+
+Traffic is checked as it enters an interface.
+
+ip access-group BlockStudents in
+Outbound ACL
+
+Traffic is checked as it leaves an interface.
+
+ip access-group BlockStudents out
+
+Easy memory:
+
+IN = entering router interface
+OUT = leaving router interface
+
+33. IMPORTANT ACL COMMANDS
+View ACL
+show access-lists
+See ACL applied to interface
+show ip interface gigabitethernet 0/0
+
+Your lab uses both commands for verification.
+
+Apply ACL
+ip access-group BlockStudents out
+Remove ACL from interface
+interface gigabitethernet 0/0
+no ip access-group BlockStudents out
+Delete named ACL
+no ip access-list standard BlockStudents
+34. FIREWALL
+Q. What is a firewall?
+
+A firewall is a security mechanism that controls network traffic according to predefined rules.
+
+In your practical?
+
+The router's Standard ACL is being used as a basic firewall.
+
+35. PACKET TRACER COMMANDS YOU NEED TO KNOW
+Basic
+enable
+configure terminal
+exit
+end
+Interface
+interface gigabitethernet 0/0
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+Check interfaces
+show ip interface brief
+Check routing table
+show ip route
+Check running configuration
+show running-config
+Check specific configuration sections
+show running-config | section interface
+Check RIP
+show ip protocols
+Check ACL
+show access-lists
+Check interface ACL
+show ip interface gigabitethernet 0/0
+36. NO SHUTDOWN 🔥
+Q. Why do we use no shutdown?
+
+Cisco router interfaces are administratively down by default in many configurations.
+
+no shutdown
+
+activates the interface.
+
+Check:
+
+show ip interface brief
+
+You want:
+
+up    up
+37. UP/UP, DOWN/DOWN, ADMINISTRATIVELY DOWN
+up/up
+
+Interface and line protocol are functioning.
+
+administratively down
+
+Interface has been manually disabled.
+
+Usually fix:
+
+no shutdown
+down/down
+
+Usually indicates physical/link problems or the other side is down.
+
+38. PING 🔥
+Q. What does ping use?
+
+ICMP — Internet Control Message Protocol.
+
+Q. What does ping test?
+
+Basic IP connectivity/reachability.
+
+Command:
+ping 192.168.1.10
+39. TRACEROUTE
+Q. What does traceroute do?
+
+Shows the path/hops packets take toward a destination.
+
+Cisco:
+
+traceroute 192.168.1.10
+
+PC:
+
+tracert 192.168.1.10
+40. ARP 🔥
+Q. What is ARP?
+
+Address Resolution Protocol.
+
+It maps an IPv4 address to a MAC address on a local network.
+
+Example:
+
+IP → MAC
+Command:
+show arp
+41. DHCP
+Q. What is DHCP?
+
+Dynamic Host Configuration Protocol.
+
+It automatically provides network configuration such as:
+
+IP address
+Subnet mask
+Default gateway
+DNS server
+DORA
+
+Memorize:
+
+Discover → Offer → Request → Acknowledge
+
+42. DNS
+Q. What is DNS?
+
+Domain Name System.
+
+It translates domain names into IP addresses.
+
+Example:
+
+google.com
+      ↓
+IP address
+43. HTTP VS HTTPS
+HTTP
+
+Port:
+
+80
+HTTPS
+
+Port:
+
+443
+
+HTTPS provides encrypted communication using TLS.
+
+44. IMPORTANT PORT NUMBERS 🔥🔥
+
+Memorize these:
+
+Protocol	Port
+FTP	20/21
+SSH	22
+Telnet	23
+SMTP	25
+DNS	53
+DHCP	67/68
+HTTP	80
+POP3	110
+IMAP	143
+HTTPS	443
+45. FTP
+
+File Transfer Protocol
+
+Used for transferring files.
+
+Uses:
+
+20 → data
+21 → control
+46. SSH VS TELNET
+SSH
+Port 22
+Encrypted
+Secure remote login
+Telnet
+Port 23
+Unencrypted
+Insecure
+Viva:
+
+Which would you prefer for remote administration?
+
+SSH.
+
+47. CSMA/CD
+Q. What is CSMA/CD?
+
+Carrier Sense Multiple Access with Collision Detection.
+
+Traditionally associated with shared Ethernet networks.
+
+Basic idea:
+
+Listen before transmitting.
+Transmit if medium is free.
+Detect collision.
+Wait using backoff.
+Retransmit.
+48. CSMA/CA
+
+Carrier Sense Multiple Access with Collision Avoidance.
+
+Used with wireless LANs.
+
+Difference:
+CSMA/CD → detects collisions
+CSMA/CA → tries to avoid collisions
+49. COLLISION DOMAIN VS BROADCAST DOMAIN 🔥
+Collision domain
+
+Area where transmitted frames could potentially collide.
+
+Broadcast domain
+
+Area in which a broadcast frame can propagate.
+
+Switch
+
+Each switch port generally creates a separate collision domain.
+
+Router
+
+Separates broadcast domains.
+
+50. VLAN
+Q. What is VLAN?
+
+Virtual Local Area Network.
+
+It logically divides a physical switch network into separate broadcast domains.
+
+Why VLAN?
+Security
+Segmentation
+Reduced broadcast traffic
+Easier management
+51. ACCESS PORT VS TRUNK PORT
+Access port
+
+Carries traffic for a single VLAN.
+
+Usually connects to:
+
+PC
+Printer
+Server
+Trunk port
+
+Carries traffic from multiple VLANs.
+
+Usually used between:
+
+Switch ↔ Switch
+Switch ↔ Router
+52. NAT
+Q. What is NAT?
+
+Network Address Translation.
+
+It translates IP addresses, commonly allowing private addresses to communicate through public addresses.
+
+Why NAT?
+Conserves IPv4 addresses
+Allows private networks to access public networks
+Provides a level of address hiding
+53. UNICAST / BROADCAST / MULTICAST
+Unicast
+
+One → One
+
+Broadcast
+
+One → All devices in broadcast domain
+
+Multicast
+
+One → Selected group
+
+54. ENCAPSULATION 🔥
+
+When data moves down the network stack, headers are added.
+
+Typical:
+
+Application → Data
+Transport → Segment
+Network → Packet
+Data Link → Frame
+Physical → Bits
+Memorize:
+
+Data → Segment → Packet → Frame → Bits
+
+Going the other way is decapsulation.
+
+55. TCP THREE-WAY HANDSHAKE 🔥🔥
+
+TCP connection establishment:
+
+SYN
+ ↓
+SYN-ACK
+ ↓
+ACK
+Viva:
+
+Why three-way handshake?
+
+To establish a reliable connection and synchronize sequence numbers between sender and receiver.
+
+56. TCP FOUR-WAY TERMINATION
+
+Common simplified sequence:
+
+FIN
+ACK
+FIN
+ACK
+
+Used to terminate a TCP connection.
+
+57. ERROR DETECTION
+
+Know these:
+
+Parity
+Checksum
+CRC
+CRC
+
+Cyclic Redundancy Check
+
+Commonly used for detecting errors in data transmission.
+
+58. TRANSMISSION MEDIA
+Guided
+
+Physical medium:
+
+Twisted pair
+Coaxial cable
+Fiber optic
+Unguided
+
+Wireless:
+
+Radio
+Microwave
+Infrared
+59. STRAIGHT-THROUGH VS CROSSOVER
+Straight-through
+
+Traditionally used between different device types:
+
+PC → Switch
+Router → Switch
+Crossover
+
+Traditionally used between similar device types:
+
+Switch → Switch
+PC → PC
+Router → Router
+
+Modern Ethernet devices often support auto-MDI/MDIX, so this distinction is less strict in modern hardware/Packet Tracer contexts.
+
+60. CABLE TYPES
+UTP
+
+Unshielded Twisted Pair
+
+Common Ethernet cable.
+
+STP
+
+Shielded Twisted Pair
+
+Provides additional protection against electromagnetic interference.
+
+Fiber
+
+Uses light signals.
+
+Advantages:
+
+High bandwidth
+Long distance
+Immune to electromagnetic interference
+61. SUBNET MASK QUESTIONS THEY MAY THROW AT YOU
+/24
+255.255.255.0
+/25
+255.255.255.128
+/26
+255.255.255.192
+/27
+255.255.255.224
+/28
+255.255.255.240
+/29
+255.255.255.248
+/30
+255.255.255.252
+62. /30 — VERY IMPORTANT FOR ROUTERS
+
+A /30 has:
+
+4 total addresses
+2 usable
+
+Perfect for a point-to-point router link.
+
+Example:
+
+192.168.10.0/30
+Type	Address
+Network	.0
+Usable	.1
+Usable	.2
+Broadcast	.3
+63. VLSM 🔥
+Q. What is VLSM?
+
+Variable Length Subnet Masking.
+
+It allows different subnet sizes to be used within the same network.
+
+Why?
+
+To use IP addresses efficiently.
+
+Example:
+
+LAN → /29
+WAN → /30
+
+instead of wasting the same subnet size everywhere.
+
+64. DEFAULT ROUTE
+
+A default route is used when no more specific route exists.
+
+IPv4:
+
+ip route 0.0.0.0 0.0.0.0 <next-hop>
+
+Think:
+
+“If I don't know where else to send it, send it here.”
+
+65. ROUTING TABLE
+Q. What is a routing table?
+
+A table maintained by a router containing information about reachable networks and how to reach them.
+
+Command:
+show ip route
+
+Common codes:
+
+C = Connected
+L = Local
+S = Static
+R = RIP
+O = OSPF
+B = BGP
+
+🔥 Know these.
+
+66. WHY DOES A PC NEED A GATEWAY?
+
+If destination is in the same subnet:
+
+PC → destination
+
+If destination is another subnet:
+
+PC → default gateway → router → destination
+67. MOST LIKELY “WHY?” QUESTIONS
+Why use RIPv2 instead of RIPv1?
+
+Because RIPv2 supports classless routing and VLSM.
+
+Why use OSPF?
+
+Better scalability, faster convergence, and link-state routing.
+
+Why use BGP?
+
+For routing between autonomous systems.
+
+Why use a standard ACL?
+
+When filtering based primarily on source IP address is sufficient.
+
+Why use an extended ACL?
+
+When we need more specific control such as destination, protocol, or port.
+
+Why use wildcard mask?
+
+To define which portions of an address must match.
+
+Why permit any?
+
+Because of the implicit deny at the end of an ACL.
+
+Why no shutdown?
+
+To administratively enable the interface.
+
+Why /30 for router links?
+
+Because it provides two usable addresses, which is suitable for a point-to-point link.
+
+Why subnet?
+
+To divide a network into smaller logical networks and use addresses efficiently.
+
+68. TROUBLESHOOTING — TEACHER SHOWS YOU A BROKEN PACKET TRACER FILE 😭
+
+Use this order:
+
+1. Check interfaces
+show ip interface brief
+
+Look for:
+
+up/up
+2. Check IP addresses
+show running-config
+3. Check PC configuration
+
+Verify:
+
+IP
+Subnet mask
+Default gateway
+4. Ping local gateway
+ping <gateway>
+5. Ping directly connected neighbor
+ping <neighbor IP>
+6. Check routing table
+show ip route
+7. Check routing protocol
+show ip protocols
+8. Check ACL
+show access-lists
+9. Check whether ACL is applied
+show ip interface
+69. IF PING FAILS — SAY THIS IN VIVA
+
+Teacher:
+
+“PC cannot ping another network. What will you check?”
+
+Answer:
+
+“First I will check the PC IP address, subnet mask and default gateway. Then I will check the router interfaces using show ip interface brief, verify the routing table using show ip route, check whether the required routing protocol is working, and finally check whether an ACL is blocking the traffic.”
+
+That answer sounds way better than randomly saying “I'll check the cable.” 😭
+
+70. YOUR LAB 17 — RAPID-FIRE VIVA
+
+These are especially likely because they're directly based on your uploaded practical.
+
+What is the purpose of the lab?
+
+To implement a basic firewall using a Standard ACL and block Students from accessing the Server section.
+
+What is the Students network?
+10.0.0.0/8
+Teachers network?
+192.168.1.0/24
+Server network?
+172.16.0.0/24
+
+These are the addressing schemes specified in the lab.
+
+Which routing protocol is used?
+
+RIPv2.
+
+Which ACL?
+
+Named Standard ACL.
+
+ACL name?
+BlockStudents
+What does it deny?
+10.0.0.0/8
+Wildcard?
+0.255.255.255
+Where is ACL applied?
+Router0 GigabitEthernet 0/0
+Direction?
+OUT
+Why?
+
+Because G0/0 leads toward the Server section.
+
+Can Students access Teachers?
+
+Yes.
+
+Can Students access Server?
+
+No.
+
+Can Teachers access Server?
+
+Yes.
+
+The expected post-ACL tests in the lab reflect exactly this behavior.
+
+71. ACL MODIFICATION VIVA
+
+Your lab also asks you to modify the ACL to block only PC0, rather than the whole Students network.
+
+Original:
+
+deny 10.0.0.0 0.255.255.255
+
+Change to:
+
+10 deny 10.0.0.10 0.0.0.0
+
+or conceptually:
+
+deny host 10.0.0.10
+
+Then:
+
+PC0 → Server ❌
+PC1 → Server ✅
+72. THE 20 QUESTIONS I WOULD MEMORIZE FIRST
+
+If you're running out of time, memorize these:
+
+What is a computer network?
+What is a protocol?
+OSI 7 layers.
+TCP/IP layers.
+TCP vs UDP.
+MAC vs IP.
+Switch vs router.
+What is an IP address?
+IPv4 = 32 bit.
+IPv6 = 128 bit.
+What is subnetting?
+What is VLSM?
+Network vs broadcast address.
+What is a default gateway?
+Static vs dynamic routing.
+RIP vs OSPF.
+What is BGP?
+What is ACL?
+Standard vs extended ACL.
+Why is your Lab 17 ACL applied outbound on Router0 G0/0?
+
+And for your current practical specifically, remember this chain:
+
+192.168.5.0/24
+      ↓
+16 subnets
+      ↓
+borrow 4 bits
+      ↓
+ /28
+      ↓
+255.255.255.240
+      ↓
+8th subnet
+      ↓
+192.168.5.112
+      ↓
+broadcast .127
+      ↓
+usable .113 – .126
+
+And your firewall:
+
+Students
+10.0.0.0/8
+      |
+      |-----> Teachers
+      |        192.168.1.0/24
+      |
+      X
+      |
+      v
+Server
+172.16.0.0/24
+
+ACL = BlockStudents
+deny 10.0.0.0 0.255.255.255
+permit any
+
+Applied:
+Router0 G0/0 OUT
+
+That is the core stuff I'd cram before walking into the CN viva.
+
+solve for ts too LAB Scenario:
+You are tasked with seting up a lan with two VLANs(VLAN 10 and VLAN 20).
+task 1: configure the pcs in vlan 10 and vlan 20 and verify the connectivity within each vlan.
+task 2:configure vlan trunking between two switches and verify that vlan 10 and vlan20 do not communicate with each other.
+task 3:implement inter-vlan routing using a router and verify communication between the two vlans. 
+
+NUMERICAL SUBNETING :
+The organization has been assigned the network 192.168.5.0/24 and needs to divide it into 16 equal subnets.
+Q1:What is the new subnet mask?
+Q2:Calculate the network address and broadcast address for the 3rd subnet.
+Q3:provide the range of usable IP addresses for the 3rd subnet.
+
+Absolutely. This one combines VLANs + trunking + inter-VLAN routing + subnetting, so for the practical you should have the topology, exact Packet Tracer commands, verification, and numerical answer ready.
+
+LAB: VLAN, Trunking and Inter-VLAN Routing
+1. Objectives
+Configure VLAN 10 and VLAN 20 on two switches.
+Assign PCs to their respective VLANs.
+Verify communication between PCs within the same VLAN.
+Configure trunking between two switches.
+Verify that VLAN 10 and VLAN 20 are isolated from each other.
+Implement inter-VLAN routing using a router.
+Verify communication between VLAN 10 and VLAN 20.
+Perform subnetting of 192.168.5.0/24 into 16 equal subnets.
+2. Network Topology
+
+Use this topology in Cisco Packet Tracer:
+
+        PC0                     PC2
+   VLAN 10                    VLAN 10
+ 192.168.10.10              192.168.10.12
+       |                         |
+       |                         |
+     SW0 ====================== SW1
+              TRUNK
+       |                         |
+       |                         |
+      PC1                       PC3
+   VLAN 20                    VLAN 20
+ 192.168.20.10              192.168.20.12
+
+                  |
+                  |
+                Router
+             Inter-VLAN Routing
+
+A cleaner physical arrangement:
+
+PC0 ──┐
+      ├── SW0 ====== SW1 ──┬── PC2
+PC1 ──┘     TRUNK          └── PC3
+             |
+           Router
+
+For the router connection, use Router-on-a-Stick, where one router interface carries both VLANs using subinterfaces.
+
+3. IP Addressing Table
+
+We'll use:
+
+VLAN 10
+Network: 192.168.10.0/24
+Gateway: 192.168.10.1
+VLAN 20
+Network: 192.168.20.0/24
+Gateway: 192.168.20.1
+Device	VLAN	IP Address	Subnet Mask	Default Gateway
+PC0	10	192.168.10.10	255.255.255.0	192.168.10.1
+PC2	10	192.168.10.12	255.255.255.0	192.168.10.1
+PC1	20	192.168.20.10	255.255.255.0	192.168.20.1
+PC3	20	192.168.20.12	255.255.255.0	192.168.20.1
+Router G0/0.10	10	192.168.10.1	255.255.255.0	—
+Router G0/0.20	20	192.168.20.1	255.255.255.0	—
+4. VLAN Configuration
+Step 1: Configure VLANs on SW0
+
+Open SW0 → CLI:
+
+enable
+configure terminal
+
+vlan 10
+name VLAN10
+exit
+
+vlan 20
+name VLAN20
+exit
+5. Assign SW0 Ports to VLANs
+
+Assume:
+
+SW0 Fa0/1 → PC0
+SW0 Fa0/2 → PC1
+SW0 Fa0/24 → SW1
+
+Configure:
+
+interface fastEthernet 0/1
+switchport mode access
+switchport access vlan 10
+exit
+
+interface fastEthernet 0/2
+switchport mode access
+switchport access vlan 20
+exit
+6. Configure VLANs on SW1
+enable
+configure terminal
+
+vlan 10
+name VLAN10
+exit
+
+vlan 20
+name VLAN20
+exit
+
+Assume:
+
+SW1 Fa0/1 → PC2
+SW1 Fa0/2 → PC3
+SW1 Fa0/24 → SW0
+
+Configure:
+
+interface fastEthernet 0/1
+switchport mode access
+switchport access vlan 10
+exit
+
+interface fastEthernet 0/2
+switchport mode access
+switchport access vlan 20
+exit
+7. Configure IP Addresses on PCs
+
+Go to:
+
+PC → Desktop → IP Configuration
+
+PC0
+IP Address:      192.168.10.10
+Subnet Mask:     255.255.255.0
+Default Gateway: 192.168.10.1
+PC2
+IP Address:      192.168.10.12
+Subnet Mask:     255.255.255.0
+Default Gateway: 192.168.10.1
+PC1
+IP Address:      192.168.20.10
+Subnet Mask:     255.255.255.0
+Default Gateway: 192.168.20.1
+PC3
+IP Address:      192.168.20.12
+Subnet Mask:     255.255.255.0
+Default Gateway: 192.168.20.1
+8. Task 1 — Verify Connectivity Within Each VLAN
+
+At this point, we haven't configured the trunk yet, so PC0 and PC2 will not communicate across switches.
+
+But devices on the same switch and VLAN should communicate.
+
+From PC0:
+
+ping 192.168.10.12
+
+From PC1:
+
+ping 192.168.20.12
+
+Depending on your exact physical arrangement, test same-VLAN PCs that are currently on the same switch.
+
+Expected
+VLAN 10 → VLAN 10 = SUCCESS
+VLAN 20 → VLAN 20 = SUCCESS
+
+But:
+
+VLAN 10 → VLAN 20 = FAIL
+
+because different VLANs are separate broadcast domains and a Layer 2 switch does not route between them.
+
+9. Verify VLAN Configuration
+
+On both switches:
+
+show vlan brief
+
+You should see something similar to:
+
+VLAN  Name
+10    VLAN10
+20    VLAN20
+
+and the correct access ports should appear under each VLAN.
+
+10. Task 2 — Configure VLAN Trunking
+
+Now we need to allow VLAN 10 and VLAN 20 traffic to travel between SW0 and SW1.
+
+Assuming the switches are connected through:
+
+SW0 Fa0/24 ↔ SW1 Fa0/24
+SW0
+configure terminal
+
+interface fastEthernet 0/24
+switchport mode trunk
+exit
+SW1
+configure terminal
+
+interface fastEthernet 0/24
+switchport mode trunk
+exit
+11. Verify Trunk
+
+On both switches:
+
+show interfaces trunk
+
+You should see the trunk interface and VLANs allowed on it.
+
+Expected conceptually:
+
+Port      Mode
+Fa0/24    on
+
+Vlans allowed on trunk:
+10
+20
+12. Test VLAN Connectivity After Trunking
+
+Now test:
+
+VLAN 10
+
+From PC0:
+
+ping 192.168.10.12
+
+Expected:
+
+Success
+
+Because both PCs are in VLAN 10 and VLAN 10 is carried over the trunk.
+
+VLAN 20
+
+From PC1:
+
+ping 192.168.20.12
+
+Expected:
+
+Success
+VLAN 10 → VLAN 20
+
+From PC0:
+
+ping 192.168.20.10
+
+Expected:
+
+Request timed out
+
+This is correct.
+
+13. Why Can't VLAN 10 Communicate With VLAN 20?
+
+🔥 Viva question.
+
+Because VLANs are separate Layer 2 broadcast domains.
+
+A Layer 2 switch forwards frames using MAC addresses but does not perform routing between different IP networks.
+
+Therefore:
+
+VLAN 10
+192.168.10.0/24
+       X
+VLAN 20
+192.168.20.0/24
+
+We need a Layer 3 device, such as a router, to communicate between them.
+
+14. Task 3 — Inter-VLAN Routing
+
+We'll use Router-on-a-Stick.
+
+Connect:
+
+Router G0/0 ↔ SW0
+
+For example:
+
+Router G0/0
+     |
+     |
+ SW0 Fa0/23
+
+The switch port connected to the router must be a trunk.
+
+15. Configure SW0 Router Port as Trunk
+
+Assume:
+
+SW0 Fa0/23 → Router G0/0
+
+Configure:
+
+enable
+configure terminal
+
+interface fastEthernet 0/23
+switchport mode trunk
+exit
+
+Verify:
+
+show interfaces trunk
+16. Configure Router-on-a-Stick
+
+Go to Router CLI.
+
+First enable the physical interface:
+
+enable
+configure terminal
+
+interface gigabitEthernet 0/0
+no shutdown
+exit
+
+Now create the VLAN 10 subinterface:
+
+interface gigabitEthernet 0/0.10
+encapsulation dot1Q 10
+ip address 192.168.10.1 255.255.255.0
+exit
+
+VLAN 20:
+
+interface gigabitEthernet 0/0.20
+encapsulation dot1Q 20
+ip address 192.168.20.1 255.255.255.0
+exit
+17. What Does encapsulation dot1Q Mean?
+
+🔥 Very likely viva.
+
+encapsulation dot1Q 10
+
+means that the subinterface handles traffic tagged for VLAN 10 using IEEE 802.1Q VLAN tagging.
+
+For VLAN 20:
+
+encapsulation dot1Q 20
+18. Verify Router Configuration
+
+Use:
+
+show ip interface brief
+
+You should see:
+
+GigabitEthernet0/0.10
+192.168.10.1
+up
+up
+
+GigabitEthernet0/0.20
+192.168.20.1
+up
+up
+
+Also:
+
+show ip route
+
+You should have connected routes similar to:
+
+C    192.168.10.0/24
+C    192.168.20.0/24
+19. Test Inter-VLAN Routing
+
+Now the default gateways are active.
+
+From PC0:
+
+ping 192.168.20.10
+
+Expected:
+
+SUCCESS
+
+From PC1:
+
+ping 192.168.10.10
+
+Expected:
+
+SUCCESS
+
+Now:
+
+VLAN 10 ↔ VLAN 20
+
+works because the router is routing between the two networks.
+
+20. Final Connectivity Results
+Test	Before Trunk	After Trunk	After Inter-VLAN Routing
+VLAN 10 PC ↔ VLAN 10 PC	Depends on same switch	✅	✅
+VLAN 20 PC ↔ VLAN 20 PC	Depends on same switch	✅	✅
+VLAN 10 → VLAN 20	❌	❌	✅
+VLAN 20 → VLAN 10	❌	❌	✅
+
+The important concept:
+
+                    Layer 2
+              ┌─────────────────┐
+VLAN 10 ──────┤                 │
+              │    SWITCHES     │
+VLAN 20 ──────┤                 │
+              └─────────────────┘
+                     │
+                  NO ROUTING
+                     ↓
+                VLANs isolated
+
+                    ↓
+
+             Router / Layer 3
+                     ↓
+               Inter-VLAN
+                  Routing
+                     ↓
+             VLAN 10 ↔ VLAN 20
+21. Important Commands for This Practical
+Show VLANs
+show vlan brief
+Show trunk
+show interfaces trunk
+Show interfaces
+show ip interface brief
+Show routing table
+show ip route
+Show running configuration
+show running-config
+Test connectivity
+ping <IP-address>
+22. NUMERICAL SUBNETTING
+
+Given:
+
+192.168.5.0/24
+
+Need:
+
+16 equal subnets
+Q1. What is the new subnet mask?
+
+We need 16 subnets.
+
+Formula:
+
+2^n = 16
+
+Therefore:
+
+n = 4
+
+Borrow 4 bits from the host portion.
+
+Original:
+
+/24
+
+New:
+
+/28
+Answer
+
+New subnet mask = /28
+
+Decimal:
+
+255.255.255.240
+Q2. Network and Broadcast Address of 3rd Subnet
+
+With /28:
+
+Mask = 255.255.255.240
+
+Block size:
+
+256 - 240 = 16
+
+So the subnet networks are:
+
+Subnet	Network	Broadcast
+1st	192.168.5.0	192.168.5.15
+2nd	192.168.5.16	192.168.5.31
+3rd	192.168.5.32	192.168.5.47
+4th	192.168.5.48	192.168.5.63
+5th	192.168.5.64	192.168.5.79
+6th	192.168.5.80	192.168.5.95
+7th	192.168.5.96	192.168.5.111
+8th	192.168.5.112	192.168.5.127
+Therefore:
+
+3rd subnet network address:
+
+192.168.5.32
+
+3rd subnet broadcast address:
+
+192.168.5.47
+Q3. Usable IP Range of 3rd Subnet
+
+Network:
+
+192.168.5.32
+
+Broadcast:
+
+192.168.5.47
+
+Therefore usable addresses are:
+
+192.168.5.33
+      ↓
+192.168.5.46
+Answer:
+
+Usable IP range = 192.168.5.33 – 192.168.5.46
+
+There are:
+
+16 total addresses
+- 1 network
+- 1 broadcast
+= 14 usable
+23. Final Numerical Answers — Memorize This
+Given: 192.168.5.0/24
+Required: 16 subnets
+
+Q1:
+New prefix = /28
+Subnet mask = 255.255.255.240
+
+Q2 — 3rd subnet:
+Network   = 192.168.5.32
+Broadcast = 192.168.5.47
+
+Q3:
+Usable = 192.168.5.33 – 192.168.5.46
+🔥 Viva Questions for THIS Lab
+1. What is a VLAN?
+
+A VLAN is a logical network that divides a physical switch into separate broadcast domains.
+
+2. Why do we use VLANs?
+
+For network segmentation, security, management, and reducing broadcast traffic.
+
+3. What is VLAN 10?
+
+A logical VLAN identified by VLAN ID 10.
+
+4. What is VLAN 20?
+
+A logical VLAN identified by VLAN ID 20.
+
+5. Can VLAN 10 communicate with VLAN 20 using only a Layer 2 switch?
+
+No.
+
+A Layer 3 device is required.
+
+6. What is a trunk port?
+
+A trunk port carries traffic belonging to multiple VLANs between network devices.
+
+7. What protocol is used for VLAN tagging?
+
+IEEE 802.1Q.
+
+8. What is an access port?
+
+A switch port that normally carries traffic for a single VLAN.
+
+9. What is the difference between access and trunk?
+
+Access = one VLAN
+Trunk = multiple VLANs
+
+10. Why is the switch-to-switch link a trunk?
+
+Because VLAN 10 and VLAN 20 both need to cross the link between the switches.
+
+11. Why doesn't VLAN 10 communicate with VLAN 20 before routing?
+
+Because they are separate Layer 2 broadcast domains.
+
+12. What is inter-VLAN routing?
+
+Routing traffic between different VLANs.
+
+13. What is Router-on-a-Stick?
+
+A method of inter-VLAN routing where a single physical router interface uses multiple subinterfaces, with each subinterface representing a VLAN.
+
+14. Why create G0/0.10?
+
+It is the router subinterface associated with VLAN 10.
+
+15. Why G0/0.20?
+
+It is the router subinterface associated with VLAN 20.
+
+16. What does this do?
+encapsulation dot1Q 10
+
+It associates the subinterface with VLAN 10 using IEEE 802.1Q tagging.
+
+17. What is the default gateway for VLAN 10?
+192.168.10.1
+18. What is the default gateway for VLAN 20?
+192.168.20.1
+19. Why does a PC need a default gateway?
+
+To communicate with devices outside its local IP network.
+
+20. What happens if the PC has the wrong gateway?
+
+It may communicate within its own subnet but cannot properly reach other networks.
+
+21. What is the difference between VLAN and subnet?
+
+A VLAN is a Layer 2 logical segmentation, while a subnet is a Layer 3 IP network division. In normal designs, each VLAN is commonly associated with its own IP subnet.
+
+22. What is the subnet mask for /28?
+255.255.255.240
+23. How many addresses are in a /28?
+16
+24. How many usable addresses?
+14
+25. What is the block size?
+256 - 240 = 16
+26. What is the 3rd subnet?
+192.168.5.32/28
+27. Broadcast?
+192.168.5.47
+28. Usable range?
+192.168.5.33 – 192.168.5.46
+⚡ If the examiner says "Explain your whole practical"
+
+Say this:
+
+“First, I created VLAN 10 and VLAN 20 on both switches and assigned the respective PCs to the VLANs using access ports. Initially, communication was possible only within the same VLAN because different VLANs are separate broadcast domains. Then I configured the switch-to-switch link as an 802.1Q trunk so that both VLANs could pass between the switches. Finally, I implemented inter-VLAN routing using Router-on-a-Stick by creating subinterfaces on the router for VLAN 10 and VLAN 20 and assigning their gateway IP addresses. After configuring the default gateways on the PCs, I verified that PCs in different VLANs could communicate.”
+
+That is basically your entire practical in one viva answer.
